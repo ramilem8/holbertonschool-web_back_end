@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Provides statistics about Nginx logs stored in MongoDB."""
+
+from pymongo import MongoClient
+
+
+if __name__ == "__main__":
+    client = MongoClient("mongodb://127.0.0.1:27017")
+    collection = client.logs.nginx
+
+    print("{} logs".format(collection.count_documents({})))
+    print("Methods:")
+
+    for method in ["GET", "POST", "PUT", "PATCH", "DELETE"]:
+        print("\tmethod {}: {}".format(
+            method,
+            collection.count_documents({"method": method})
+        ))
+
+    print("{} status check".format(
+        collection.count_documents({
+            "method": "GET",
+            "path": "/status"
+        })
+    ))
+
+    print("IPs:")
+
+    pipeline = [
+        {
+            "$group": {
+                "_id": "$ip",
+                "count": {"$sum": 1}
+            }
+        },
+        {
+            "$sort": {
+                "count": -1
+            }
+        },
+        {
+            "$limit": 10
+        }
+    ]
+
+    for ip in collection.aggregate(pipeline):
+        print("\t{}: {}".format(ip["_id"], ip["count"]))
