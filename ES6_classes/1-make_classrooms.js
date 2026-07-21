@@ -1,5 +1,3 @@
-
-
 import Classroom from './o-classroom.js';
 export default function initializeRooms(){
     return [ 
