@@ -4,8 +4,7 @@ process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
 process.stdin.on('data', (data) => {
-  const name = data.toString().trim();
-  console.log(`Your name is: ${name}`);
+  process.stdout.write(`Your name is: ${data}`);
 });
 
 process.on('exit', () => {
