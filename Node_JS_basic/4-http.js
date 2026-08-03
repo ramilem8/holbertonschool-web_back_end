@@ -1,37 +1,11 @@
-const fs = require('fs');
+const http = require('http');
 
-function countStudents(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, fileContent) => {
-      if (err) {
-        reject(new Error('Cannot load the database'));
-        return;
-      }
+const app = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.statusCode = 200;
+  res.end('Hello Holberton School!');
+});
 
-      const lines = fileContent.split('\n').filter((line) => line.trim() !== '');
-      const students = lines.slice(1);
+app.listen(1245);
 
-      const fields = {};
-
-      students.forEach((line) => {
-        const [firstname, , , field] = line.split(',');
-        if (!fields[field]) {
-          fields[field] = [];
-        }
-        fields[field].push(firstname);
-      });
-
-      const total = students.length;
-      console.log(`Number of students: ${total}`);
-
-      Object.keys(fields).forEach((field) => {
-        const names = fields[field];
-        console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
-      });
-
-      resolve();
-    });
-  });
-}
-
-module.exports = countStudents;
+module.exports = app;
