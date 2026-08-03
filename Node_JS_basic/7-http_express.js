@@ -57,3 +57,19 @@ app.get('/students', (req, res) => {
     .then(({ totalStudents, studentGroups }) => {
       let responseText = 'This is the list of our students\n';
       responseText += `Number of students: ${totalStudents}\n`;
+
+      Object.entries(studentGroups).forEach(([field, group]) => {
+        const firstNames = group.map((student) => student.firstname).join(', ');
+        responseText += `Number of students in ${field}: ${group.length}. List: ${firstNames}\n`;
+      });
+
+      res.send(responseText.trim());
+    })
+    .catch((err) => {
+      res.send(`This is the list of our students\n${err.message}`);
+    });
+});
+
+app.listen(1245);
+
+module.exports = app;
